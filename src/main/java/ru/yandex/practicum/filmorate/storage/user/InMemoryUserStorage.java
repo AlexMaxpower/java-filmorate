@@ -56,6 +56,21 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(userId);
     }
 
+    @Override
+    public User delete(Long userId) {
+        if (userId == null) {
+            throw new ValidationException("Передан пустой аргумент!");
+        }
+        if (!users.containsKey(userId)) {
+            throw new UserNotFoundException("Пользователь с ID=" + userId + " не найден!");
+        }
+        // удаляем из списка друзей пользователя у других пользователей
+        for (User user : users.values()) {
+            user.getFriends().remove(userId);
+        }
+        return users.remove(userId);
+    }
+
     private boolean isValidUser(User user) {
         if (!user.getEmail().contains("@")) {
             throw new ValidationException("Некорректный e-mail пользователя: " + user.getEmail());
