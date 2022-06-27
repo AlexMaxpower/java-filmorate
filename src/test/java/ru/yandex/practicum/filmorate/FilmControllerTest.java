@@ -4,12 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.controllers.FilmController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -24,12 +26,14 @@ public class FilmControllerTest {
     private FilmController filmController;
     private FilmStorage filmStorage;
     private UserStorage userStorage;
+    private LikeStorage likeStorage;
 
     @BeforeEach
     public void beforeEach() {
         filmStorage = new InMemoryFilmStorage();
         userStorage = new InMemoryUserStorage();
-        filmController = new FilmController(filmStorage, new FilmService(filmStorage, userStorage));
+
+        filmController = new FilmController(filmStorage, new FilmService(filmStorage, userStorage, null));
         film = Film.builder()
                 .name("Breakfast at Tiffany's")
                 .description("American romantic comedy film directed by Blake Edwards, written by George Axelrod," +
